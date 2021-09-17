@@ -217,7 +217,7 @@ public class Maze
         }
         catch (FileNotFoundException e)
         {
-            // If there is an error opening the PrintWriter, that's okay, just return the console data
+            // If there is an error opening the PrintWriter
             System.err.println(e);
             return;
         }
