@@ -5,11 +5,13 @@ import java.util.Random;
 public class Maze
 {
 
-    ArrayList<ArrayList<Cell>> maze;
+    private ArrayList<ArrayList<Cell>> maze;
+    private int visitCount;
 
     public Maze()
     {
         maze = new ArrayList<ArrayList<Cell>>();
+        visitCount = 0;
     }
 
     public void initFromValues(int width, int height)
@@ -30,21 +32,28 @@ public class Maze
         int y = r.nextInt(maze.size());
         int x = r.nextInt(maze.get(y).size());
 
-        System.out.println(x +" "+ y);
+        // System.out.println(x +" "+ y);
         maze.get(y).get(x).setStarting(true);
         genDFS(x, y);
-
     }
 
     private void genDFS(int x, int y)
     {
-        maze.get(y).get(x).setVisited(true);
+        if (!maze.get(y).get(x).isVisited())
+        {
+            maze.get(y).get(x).setVisited(true);
+            visitCount++;
+        }
+        System.out.println("x " + x + ".....y " + y + "..... " + visitCount);
         ArrayList<ArrayList<Integer>> availableNeighbours = getNeighbours(x, y);
 
-        if (availableNeighbours.size() == 0) // Leaf node
+        if (availableNeighbours.size() == 0)  // Leaf node
         {
-            maze.get(y).get(x).setFinishing(true);
-            //System.out.println("LEAF: " + x + " " + y);
+            if (visitCount >= maze.size() * maze.get(0).size())
+            {
+                maze.get(y).get(x).setFinishing(true);
+            }
+            // System.out.println("LEAF: " + x + " " + y);
             return;
         }
         // Pick new neighbour
@@ -70,7 +79,7 @@ public class Maze
             }
             else
             {
-                tempCell = maze.get(y-1).get(x);
+                tempCell = maze.get(y - 1).get(x);
                 if (tempCell.getWalls() == 0)
                 {
                     tempCell.setWalls(2);
@@ -97,7 +106,7 @@ public class Maze
             }
             else
             {
-                tempCell = maze.get(y).get(x-1);
+                tempCell = maze.get(y).get(x - 1);
                 if (tempCell.getWalls() == 0)
                 {
                     tempCell.setWalls(1);
@@ -108,9 +117,9 @@ public class Maze
                 }
             }
         }
-        System.out.println(this);
+        // System.out.println(this);
         genDFS(next.get(0), next.get(1));
-        if (getNeighbours(x, y).size() > 0)
+        while (getNeighbours(x, y).size() > 0)
         {
             genDFS(x, y);
         }
@@ -122,38 +131,34 @@ public class Maze
         Cell tempCell;
         if (x > 0)
         {
-            tempCell = maze.get(y).get(x-1);
-            tempCell.setFinishing(false);
+            tempCell = maze.get(y).get(x - 1);
             if (!tempCell.isVisited())
             {
-                availableNeighbours.add(new ArrayList<Integer>(Arrays.asList(x-1, y)));
+                availableNeighbours.add(new ArrayList<Integer>(Arrays.asList(x - 1, y)));
             }
         }
         if (x < maze.get(y).size() - 1)
         {
-            tempCell = maze.get(y).get(x+1);
-            tempCell.setFinishing(false);
+            tempCell = maze.get(y).get(x + 1);
             if (!tempCell.isVisited())
             {
-                availableNeighbours.add(new ArrayList<Integer>(Arrays.asList(x+1, y)));
+                availableNeighbours.add(new ArrayList<Integer>(Arrays.asList(x + 1, y)));
             }
         }
         if (y > 0)
         {
-            tempCell = maze.get(y-1).get(x);
-            tempCell.setFinishing(false);
+            tempCell = maze.get(y - 1).get(x);
             if (!tempCell.isVisited())
             {
-                availableNeighbours.add(new ArrayList<Integer>(Arrays.asList(x, y-1)));
+                availableNeighbours.add(new ArrayList<Integer>(Arrays.asList(x, y - 1)));
             }
         }
         if (y < maze.size() - 1)
         {
-            tempCell = maze.get(y+1).get(x);
-            tempCell.setFinishing(false);
+            tempCell = maze.get(y + 1).get(x);
             if (!tempCell.isVisited())
             {
-                availableNeighbours.add(new ArrayList<Integer>(Arrays.asList(x, y+1)));
+                availableNeighbours.add(new ArrayList<Integer>(Arrays.asList(x, y + 1)));
             }
         }
         return availableNeighbours;
@@ -161,7 +166,8 @@ public class Maze
 
     @Override public String toString()
     {
-        String out = " " + "_ ".repeat(maze.get(0).size())+"\n";
+        String out = "Visual Output:\n "
+                     + "_ ".repeat(maze.get(0).size()) + "\n";
         for (int i = 0; i < maze.size(); i++)
         {
             out += "|";
@@ -171,7 +177,29 @@ public class Maze
             }
             out += "\n";
         }
-        return "Maze!\n"+out;
+
+        out += "File output:\n";
+        out += maze.get(0).size() + "," + maze.size() + ":";
+        // Find start
+        String end = "";
+        String vals = "";
+        for (int i = 0; i < maze.size(); i++)
+        {
+            for (int j = 0; j < maze.get(i).size(); j++)
+            {
+                vals += maze.get(i).get(j).getWalls();
+                if (maze.get(i).get(j).isStarting())
+                {
+                    out += (j + (i * maze.get(i).size()) + 1) + ":";
+                }
+                if (maze.get(i).get(j).isFinishing())
+                {
+                    end += (j + (i * maze.get(i).size()) + 1) + ":";
+                }
+            }
+        }
+        out += end + vals;
+        return out;
     }
 
     public String toDFS()

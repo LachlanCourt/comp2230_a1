@@ -13,40 +13,47 @@ public class Cell
         finishing = false;
     }
 
-    public int getWalls() {
+    public int getWalls()
+    {
         return walls;
     }
 
-    public void setWalls(int walls_) {
+    public void setWalls(int walls_)
+    {
         this.walls = walls_;
     }
 
-    public boolean isVisited() {
+    public boolean isVisited()
+    {
         return visited;
     }
 
-    public void setVisited(boolean visited_) {
+    public void setVisited(boolean visited_)
+    {
         this.visited = visited_;
     }
 
-    public boolean isStarting() {
+    public boolean isStarting()
+    {
         return starting;
     }
 
-    public void setStarting(boolean starting_) {
+    public void setStarting(boolean starting_)
+    {
         this.starting = starting_;
     }
 
-    public boolean isFinishing() {
+    public boolean isFinishing()
+    {
         return finishing;
     }
 
-    public void setFinishing(boolean finishing_) {
+    public void setFinishing(boolean finishing_)
+    {
         this.finishing = finishing_;
     }
 
-    @Override
-    public String toString()
+    @Override public String toString()
     {
         switch (walls)
         {

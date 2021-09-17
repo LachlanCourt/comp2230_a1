@@ -16,7 +16,7 @@ public class MazeGenerator
     public void run(String[] args)
     {
         Maze maze = new Maze();
-        maze.initFromValues(Integer.valueOf(args[0]),  Integer.valueOf(args[1]));
+        maze.initFromValues(Integer.valueOf(args[0]), Integer.valueOf(args[1]));
         maze.generate();
 
 
