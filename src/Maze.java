@@ -1,8 +1,10 @@
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Maze
 {
@@ -18,13 +20,38 @@ public class Maze
 
     public void initFromValues(int width, int height)
     {
+        initFromValues(width, height, -1, -1, null);
+    }
+
+    public void initFromValues(int width, int height, int start, int end, String vals)
+    {
         for (int i = 0; i < height; i++)
         {
             maze.add(new ArrayList<Cell>());
             for (int j = 0; j < width; j++)
             {
-                maze.get(i).add(new Cell());
+                int walls = 0;
+                if (vals != null)
+                {
+                    walls = Integer.valueOf(vals.substring(0, 1));
+                    vals = vals.substring(1);
+                }
+                maze.get(i).add(new Cell(walls));
             }
+        }
+
+        // Set start and end
+        if (start != -1)
+        {
+            int y = (start - 1) / width;
+            int x = (start - 1) - (y * width);
+            maze.get(y).get(x).setStarting(true);
+        }
+        if (end != -1)
+        {
+            int y = (end - 1) / width;
+            int x = (end - 1) - (y * width);
+            maze.get(y).get(x).setFinishing(true);
         }
     }
 
@@ -225,4 +252,39 @@ public class Maze
         out.println(toDFS());
         out.close();
     }
+
+    public void generateFromFile(String filename)
+    {
+        Scanner input = null;
+        try
+        {
+            input = new Scanner(new File(filename));
+        }
+        catch (FileNotFoundException e)
+        {
+            System.err.println("File does not exist");
+            System.exit(1);
+        }
+        try
+        {
+            String read = input.nextLine();
+            String[] data = read.split(":");
+            String[] widthHeight = data[0].split(",");
+            int width = Integer.valueOf(widthHeight[0]);
+            int height = Integer.valueOf(widthHeight[1]);
+            int start = Integer.parseInt(data[1]);
+            int end = Integer.parseInt(data[2]);
+            String vals = data[3];
+            initFromValues(width, height, start, end, vals);
+        }
+        catch (Exception e)
+        {
+            System.err.print("Invalid file format");
+            System.exit(1);
+        }
+    }
+
+    public void solve() {}
+
+    public void outputSolved() {}
 }
