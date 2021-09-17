@@ -282,7 +282,6 @@ public class Maze
             System.err.print("Invalid file format");
             System.exit(1);
         }
-
     }
 
     public void solve() {}
