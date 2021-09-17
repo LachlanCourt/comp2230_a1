@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 
-public class Maze {
+public class Maze
+{
 
     ArrayList<ArrayList<Cell>> maze;
 
@@ -23,13 +24,9 @@ public class Maze {
         }
     }
 
-    public void generate()
-    {
+    public void generate() {}
 
-    }
-
-    @Override
-    public String toString()
+    @Override public String toString()
     {
         return "Maze!";
     }

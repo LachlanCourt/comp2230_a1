@@ -1,2 +1,2 @@
-public class Cell {
-}
+public class Cell
+{}

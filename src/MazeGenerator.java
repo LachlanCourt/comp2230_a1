@@ -21,7 +21,6 @@ public class MazeGenerator
 
 
         System.out.println(maze);
-
     }
 
     public static boolean validateArgs(String[] args)
@@ -44,6 +43,4 @@ public class MazeGenerator
         }
         return true;
     }
-
-
 }
