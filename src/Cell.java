@@ -5,9 +5,9 @@ public class Cell
     private boolean starting;
     private boolean finishing;
 
-    public Cell()
+    public Cell(int walls_)
     {
-        walls = 0;
+        walls = walls;
         visited = false;
         starting = false;
         finishing = false;
