@@ -1,2 +1,9 @@
-package PACKAGE_NAME;public class MazeSolverDFS {
+
+public class MazeSolverDFS
+{
+    public static void main(String[] args)
+    {
+        System.out.println("test");
+    }
+
 }
