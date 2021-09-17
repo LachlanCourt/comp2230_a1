@@ -1,3 +1,5 @@
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -44,7 +46,6 @@ public class Maze
             maze.get(y).get(x).setVisited(true);
             visitCount++;
         }
-        System.out.println("x " + x + ".....y " + y + "..... " + visitCount);
         ArrayList<ArrayList<Integer>> availableNeighbours = getNeighbours(x, y);
 
         if (availableNeighbours.size() == 0)  // Leaf node
@@ -177,9 +178,12 @@ public class Maze
             }
             out += "\n";
         }
+        return out;
+    }
 
-        out += "File output:\n";
-        out += maze.get(0).size() + "," + maze.size() + ":";
+    public String toDFS()
+    {
+        String out = maze.get(0).size() + "," + maze.size() + ":";
         // Find start
         String end = "";
         String vals = "";
@@ -202,8 +206,23 @@ public class Maze
         return out;
     }
 
-    public String toDFS()
+    public void outputToFile(String filename)
     {
-        return "";
+        // Output to text file
+        PrintWriter out;
+        try
+        {
+            // Declare a new PrintWriter
+            out = new PrintWriter(filename);
+        }
+        catch (FileNotFoundException e)
+        {
+            // If there is an error opening the PrintWriter, that's okay, just return the console data
+            System.err.println(e);
+            return;
+        }
+        // Output to file
+        out.println(toDFS());
+        out.close();
     }
 }

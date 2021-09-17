@@ -18,10 +18,9 @@ public class MazeGenerator
         Maze maze = new Maze();
         maze.initFromValues(Integer.valueOf(args[0]), Integer.valueOf(args[1]));
         maze.generate();
-
-
         System.out.println(maze);
-        // Output to file
+        maze.outputToFile(args[2]);
+        System.out.println("Data outputted to text file!");
     }
 
     public static boolean validateArgs(String[] args)
