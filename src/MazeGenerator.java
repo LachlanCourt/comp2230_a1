@@ -16,11 +16,11 @@ public class MazeGenerator
     public void run(String[] args)
     {
         Maze maze = new Maze();
-        maze.initFromValues(args);
+        maze.initFromValues(Integer.valueOf(args[0]), Integer.valueOf(args[1]));
         maze.generate();
-
-
         System.out.println(maze);
+        maze.outputToFile(args[2]);
+        System.out.println("Data outputted to text file!");
     }
 
     public static boolean validateArgs(String[] args)
