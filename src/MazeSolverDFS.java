@@ -5,5 +5,4 @@ public class MazeSolverDFS
     {
         System.out.println("test");
     }
-
 }
