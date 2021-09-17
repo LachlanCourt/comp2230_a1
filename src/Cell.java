@@ -7,7 +7,7 @@ public class Cell
 
     public Cell(int walls_)
     {
-        walls = walls;
+        walls = walls_;
         visited = false;
         starting = false;
         finishing = false;
