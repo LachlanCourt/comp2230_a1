@@ -17,9 +17,7 @@ public class MazeSolverDFS
         Maze maze = new Maze();
         maze.generateFromFile(args[0]);
         maze.solve();
-        // System.out.println(maze);
-        maze.outputSolved();
-        // System.out.println("Data outputted to text file!");
+        System.out.println(maze.getSolved());
     }
 
     private static boolean validateArgs(String[] args)
