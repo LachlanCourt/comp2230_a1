@@ -1,12 +1,13 @@
 public class Cell
 {
-    int walls;
-    boolean visited;
-    boolean starting;
-    boolean finishing;
+    private int walls;
+    private boolean visited;
+    private boolean starting;
+    private boolean finishing;
 
     public Cell()
     {
+        walls = 0;
         visited = false;
         starting = false;
         finishing = false;
