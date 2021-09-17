@@ -15,7 +15,13 @@ public class MazeGenerator
 
     public void run(String[] args)
     {
-        ArrayList<ArrayList<Cell>> grid = generateGrid(args);
+        Maze maze = new Maze();
+        maze.initFromValues(args);
+        maze.generate();
+
+
+        System.out.println(maze);
+
     }
 
     public static boolean validateArgs(String[] args)
@@ -39,19 +45,5 @@ public class MazeGenerator
         return true;
     }
 
-    public ArrayList<ArrayList<Cell>> generateGrid(String[] args)
-    {
-        ArrayList<ArrayList<Cell>> grid = new ArrayList<ArrayList<Cell>>();
-        int width = Integer.valueOf(args[0]);
-        int height = Integer.valueOf(args[1]);
-        for (int i = 0; i < height; i++)
-        {
-            grid.add(new ArrayList<Cell>());
-            for (int j = 0; j < width; j++)
-            {
-                grid.get(i).add(new Cell());
-            }
-        }
-        return grid;
-    }
+
 }
