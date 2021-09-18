@@ -7,6 +7,7 @@
  ****    a Depth First Search algorithm. It validates the command line arguments
  ****    and then calls the Maze class's driver methods
  *******************************************************************************/
+
 public class MazeGenerator
 {
     public static void main(String[] args)
