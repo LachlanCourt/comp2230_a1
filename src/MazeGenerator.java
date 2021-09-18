@@ -34,7 +34,7 @@ public class MazeGenerator
 
     public static boolean validateArgs(String[] args)
     {
-        String errMess = "Invalid arguments. Usage: <width:int> <height:int> <filename:string>";
+        String errMess = "Invalid arguments. Usage: <width:int> <height:int> <filename:string> where width and height are greater than 0";
         // There should be three arguments
         if (args.length != 3)
         {
@@ -44,8 +44,14 @@ public class MazeGenerator
         try
         {
             // Ensure the first two arguments are integers
-            Integer.parseInt(args[0]);
-            Integer.parseInt(args[1]);
+            int x = Integer.parseInt(args[0]);
+            int y = Integer.parseInt(args[1]);
+
+            if (x < 1 || y < 1)
+            {
+                System.err.println(errMess);
+                return false;
+            }
         }
         catch (Exception e)
         {
