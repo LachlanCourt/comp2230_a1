@@ -65,7 +65,7 @@ public class Maze
                 // Apply config, if it has been initialised
                 if (hasConfig)
                 {
-                    walls = config.getWallValue();
+                    walls = config.getWallState();
                 }
                 // Add a new Cell to the maze with the initial state of the walls
                 maze.get(i).add(new Cell(walls));
