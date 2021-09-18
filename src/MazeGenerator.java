@@ -1,10 +1,17 @@
-import java.sql.Array;
-import java.util.ArrayList;
-
+/*******************************************************************************
+ ****    COMP2230 Programming Assignment
+ ****    c3308061
+ ****    Lachlan Court
+ ****    18/09/2021
+ ****    This class is the main class of a program that generates a maze using
+ ****    a Depth First Search algorithm. It validates the command line arguments
+ ****    and then calls the Maze class's driver methods
+ *******************************************************************************/
 public class MazeGenerator
 {
     public static void main(String[] args)
     {
+        // If arguments are invalid, the program cannot continue
         if (!validateArgs(args))
         {
             System.exit(1);
@@ -44,6 +51,7 @@ public class MazeGenerator
             System.err.println(errMess);
             return false;
         }
+        // The third argument is a filename to write to. No validation is required
         return true;
     }
 }
