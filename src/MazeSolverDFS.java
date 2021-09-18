@@ -25,8 +25,14 @@ public class MazeSolverDFS
 
     public void run(String[] args)
     {
+        // If no argument is specified, assume backtracking is allowed, to meet the spec
+        boolean showBacktracking = true;
+        if (args.length == 2)
+        {
+            showBacktracking = Boolean.valueOf(args[1]);
+        }
         // Initialise a new Maze and generate from the file provided
-        Maze maze = new Maze();
+        Maze maze = new Maze(showBacktracking);
         maze.generateFromFile(args[0]);
         // Solve the maze and output to console
         maze.solve();
@@ -35,9 +41,9 @@ public class MazeSolverDFS
 
     private static boolean validateArgs(String[] args)
     {
-        String errMess = "Invalid arguments. Usage: <filename:string>";
-        // There should only be a single argument
-        if (args.length != 1)
+        String errMess = "Invalid arguments. Usage: <filename:string> [<allowBacktracking:boolean:default:true>]";
+        // There should only be one or two arguments
+        if (args.length != 1 && args.length != 2)
         {
             System.err.println(errMess);
             return false;
@@ -45,6 +51,19 @@ public class MazeSolverDFS
         // Check that a file exists with the given filename
         File f = new File(args[0]);
         if (!f.exists())
+        {
+            System.err.println(errMess);
+            return false;
+        }
+
+        try
+        {
+            if (args.length == 2)
+            {
+                Boolean.valueOf(args[1]);
+            }
+        }
+        catch (Exception e)
         {
             System.err.println(errMess);
             return false;
