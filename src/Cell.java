@@ -1,11 +1,55 @@
+/*******************************************************************************
+ ****    COMP2230 Programming Assignment
+ ****    c3308061
+ ****    Lachlan Court
+ ****    18/09/2021
+ ****    This class represents a cell in the maze. It knows whether it is the
+ ****    starting or finishing cell, as well as what walls it has, and keeps
+ ****    track of whether it has been "visited", a concept used for DFS
+ *******************************************************************************/
+
 public class Cell
 {
-    private int walls;
+    public enum WallStates {
+        BOTH_CLOSED(0),
+        RIGHT_ONLY(1),
+        BOTTOM_ONLY(2),
+        BOTH_OPEN(3);
+        private int value;
+        WallStates(int value_)
+        {
+            this.value = value_;
+        }
+        public static WallStates valueOf(Integer value_)
+        {
+            switch (value_)
+            {
+                case 0:
+                    return BOTH_CLOSED;
+                case 1:
+                    return RIGHT_ONLY;
+                case 2:
+                    return BOTTOM_ONLY;
+                case 3:
+                    return BOTH_OPEN;
+                default:
+                    return BOTH_CLOSED;
+            }
+        }
+        public int getValue()
+        {
+            return this.value;
+        }
+    }
+
+    private WallStates walls;
     private boolean visited;
     private boolean starting;
     private boolean finishing;
 
-    public Cell(int walls_)
+
+    // Constructor
+    public Cell(WallStates walls_)
     {
         walls = walls_;
         visited = false;
@@ -13,12 +57,14 @@ public class Cell
         finishing = false;
     }
 
-    public int getWalls()
+    // Getters and setters
+
+    public WallStates getWalls()
     {
         return walls;
     }
 
-    public void setWalls(int walls_)
+    public void setWalls(WallStates walls_)
     {
         this.walls = walls_;
     }
@@ -53,17 +99,21 @@ public class Cell
         this.finishing = finishing_;
     }
 
+    /**
+     * Converts the integer number of walls to a series of ASCII symbols to draw the map
+     * @return an ASCII pair indicating the state of that square
+     */
     @Override public String toString()
     {
         switch (walls)
         {
-            case 0:
+            case BOTH_CLOSED:
                 return "_|";
-            case 1:
+            case RIGHT_ONLY:
                 return "_ ";
-            case 2:
+            case BOTTOM_ONLY:
                 return " |";
-            case 3:
+            case BOTH_OPEN:
                 return "  ";
             default:
                 return "";

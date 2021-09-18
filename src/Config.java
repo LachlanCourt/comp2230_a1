@@ -1,4 +1,12 @@
-import java.sql.Array;
+/*******************************************************************************
+ ****    COMP2230 Programming Assignment
+ ****    c3308061
+ ****    Lachlan Court
+ ****    18/09/2021
+ ****    This class maintains config for a maze when using the Maze's generate
+ ****    from file and solver methods
+ *******************************************************************************/
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -8,6 +16,7 @@ public class Config
     private String vals;
     private int width, height;
 
+    // Constructor
     public Config(int width_, int height_, int start_, int end_, String vals_)
     {
         width = width_;
@@ -32,11 +41,14 @@ public class Config
         return end;
     }
 
-    public int getValue()
+    /**
+     * Gets the next value of the vals String and removes it from the String
+     * @return The next value of the vals String
+     */
+    public Cell.WallStates getWallState()
     {
-        int walls = Integer.valueOf(vals.substring(0, 1));
+        Cell.WallStates walls = Cell.WallStates.valueOf(Integer.valueOf(vals.substring(0, 1)));
         vals = vals.substring(1);
-
         return walls;
     }
 

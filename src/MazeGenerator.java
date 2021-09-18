@@ -1,10 +1,18 @@
-import java.sql.Array;
-import java.util.ArrayList;
+/*******************************************************************************
+ ****    COMP2230 Programming Assignment
+ ****    c3308061
+ ****    Lachlan Court
+ ****    18/09/2021
+ ****    This class is the main class of a program that generates a maze using
+ ****    a Depth First Search algorithm. It validates the command line arguments
+ ****    and then calls the Maze class's driver methods
+ *******************************************************************************/
 
 public class MazeGenerator
 {
     public static void main(String[] args)
     {
+        // If arguments are invalid, the program cannot continue
         if (!validateArgs(args))
         {
             System.exit(1);
@@ -15,17 +23,19 @@ public class MazeGenerator
 
     public void run(String[] args)
     {
+        // Initialise a new Maze and generate from command line arguments
         Maze maze = new Maze();
-        maze.initFromValues(Integer.valueOf(args[0]), Integer.valueOf(args[1]));
-        maze.generate();
+        maze.generateFromValues(Integer.valueOf(args[0]), Integer.valueOf(args[1]));
+        // Output the maze to console, and then write to file
         System.out.println(maze);
-        maze.outputToFile(args[2]);
-        System.out.println("Data outputted to text file!");
+        maze.outputDFSToFile(args[2]);
+        System.out.println("Data outputted to text file " + args[2] + "!");
     }
 
     public static boolean validateArgs(String[] args)
     {
         String errMess = "Invalid arguments. Usage: <width:int> <height:int> <filename:string>";
+        // There should be three arguments
         if (args.length != 3)
         {
             System.err.println(errMess);
@@ -33,6 +43,7 @@ public class MazeGenerator
         }
         try
         {
+            // Ensure the first two arguments are integers
             Integer.parseInt(args[0]);
             Integer.parseInt(args[1]);
         }
@@ -41,6 +52,7 @@ public class MazeGenerator
             System.err.println(errMess);
             return false;
         }
+        // The third argument is a filename to write to. No validation is required
         return true;
     }
 }
