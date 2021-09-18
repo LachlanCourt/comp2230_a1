@@ -41,7 +41,7 @@ public class MazeSolverDFS
 
     private static boolean validateArgs(String[] args)
     {
-        String errMess = "Invalid arguments. Usage: <filename:string> [<allowBacktracking:boolean:default:true>]";
+        String errMess = "Invalid arguments. Usage: <filename:string> [showBacktracking:boolean:default:true]";
         // There should only be one or two arguments
         if (args.length != 1 && args.length != 2)
         {
