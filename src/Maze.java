@@ -23,6 +23,7 @@ public class Maze
     private Config config;
     private ArrayList<ArrayList<Integer>> solution;
     private long time;
+    private boolean showBacktracking;
 
     // Constructor
     public Maze()
@@ -30,6 +31,13 @@ public class Maze
         maze = new ArrayList<ArrayList<Cell>>();
         visitCount = 0;  // Generator
         time = 0;        // Solver
+        showBacktracking = true;
+    }
+
+    public Maze(boolean showBacktracking_)
+    {
+        this();
+        showBacktracking = showBacktracking_;
     }
 
     /**
@@ -379,6 +387,13 @@ public class Maze
         if (!maze.get(y).get(x).isVisited())
         {
             maze.get(y).get(x).setVisited(true);
+            if (!showBacktracking)
+            {
+                solution.add(new ArrayList<Integer>(Arrays.asList(x, y)));
+            }
+        }
+        if (showBacktracking)
+        {
             solution.add(new ArrayList<Integer>(Arrays.asList(x, y)));
         }
         // If the solution has been found there is no need to check neighbours or continue the recursion
@@ -392,7 +407,10 @@ public class Maze
         if (availableNeighbours.size() == 0)  // Leaf node
         {
             // This was a dead end, remove it from the solution
-            solution.remove(solution.size() - 1);
+            if (!showBacktracking)
+            {
+                solution.remove(solution.size() - 1);
+            }
             return;
         }
         // Always pick the first option so the solution is deterministic
@@ -408,10 +426,13 @@ public class Maze
         }
         // If the solution has not been found and the last element of the solution list is the current cell, we are
         // backtracking after reaching a dead end. Remove it from the list
-        if ((!isSolved()) && (x == solution.get(solution.size() - 1).get(0))
-            && (y == solution.get(solution.size() - 1).get(1)))
+        if (!showBacktracking)
         {
-            solution.remove(solution.size() - 1);
+            if ((!isSolved()) && (x == solution.get(solution.size() - 1).get(0))
+                && (y == solution.get(solution.size() - 1).get(1)))
+            {
+                solution.remove(solution.size() - 1);
+            }
         }
     }
 
