@@ -15,6 +15,8 @@ public class Cell
     private boolean starting;
     private boolean finishing;
 
+    public enum WallStates { BOTH_CLOSED, RIGHT_ONLY, BOTTOM_ONLY, BOTH_OPEN }
+
     // Constructor
     public Cell(int walls_)
     {
