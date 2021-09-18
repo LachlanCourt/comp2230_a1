@@ -15,17 +15,19 @@ public class MazeGenerator
 
     public void run(String[] args)
     {
+        // Initialise a new Maze and generate from command line arguments
         Maze maze = new Maze();
-        maze.initFromValues(Integer.valueOf(args[0]), Integer.valueOf(args[1]));
-        maze.generate();
+        maze.generateFromValues(Integer.valueOf(args[0]), Integer.valueOf(args[1]));
+        // Output the maze to console, and then write to file
         System.out.println(maze);
-        maze.outputToFile(args[2]);
-        System.out.println("Data outputted to text file!");
+        maze.outputDFSToFile(args[2]);
+        System.out.println("Data outputted to text file " + args[2] + "!");
     }
 
     public static boolean validateArgs(String[] args)
     {
         String errMess = "Invalid arguments. Usage: <width:int> <height:int> <filename:string>";
+        // There should be three arguments
         if (args.length != 3)
         {
             System.err.println(errMess);
@@ -33,6 +35,7 @@ public class MazeGenerator
         }
         try
         {
+            // Ensure the first two arguments are integers
             Integer.parseInt(args[0]);
             Integer.parseInt(args[1]);
         }

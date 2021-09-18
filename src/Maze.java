@@ -22,12 +22,12 @@ public class Maze
         time = 0;
     }
 
-    public void initFromValues(int width, int height)
+    private void initFromValues(int width, int height)
     {
         initFromValues(width, height, false);
     }
 
-    public void initFromValues(int width, int height, boolean hasConfig)
+    private void initFromValues(int width, int height, boolean hasConfig)
     {
         for (int i = 0; i < height; i++)
         {
@@ -37,7 +37,7 @@ public class Maze
                 int walls = 0;
                 if (hasConfig)
                 {
-                    walls = config.getValue();
+                    walls = config.getWallValue();
                 }
                 maze.get(i).add(new Cell(walls));
             }
@@ -51,8 +51,10 @@ public class Maze
         }
     }
 
-    public void generate()
+    public void generateFromValues(int width, int height)
     {
+        initFromValues(width, height);
+
         Random r = new Random();
         int y = r.nextInt(maze.size());
         int x = r.nextInt(maze.get(y).size());
@@ -185,23 +187,7 @@ public class Maze
         return availableNeighbours;
     }
 
-    @Override public String toString()
-    {
-        String out = "Visual Output:\n "
-                     + "_ ".repeat(maze.get(0).size()) + "\n";
-        for (int i = 0; i < maze.size(); i++)
-        {
-            out += "|";
-            for (int j = 0; j < maze.get(i).size(); j++)
-            {
-                out += maze.get(i).get(j);
-            }
-            out += "\n";
-        }
-        return out;
-    }
-
-    public String toDFS()
+    public String outputDFSToString()
     {
         String out = maze.get(0).size() + "," + maze.size() + ":";
         // Find start
@@ -226,7 +212,7 @@ public class Maze
         return out;
     }
 
-    public void outputToFile(String filename)
+    public void outputDFSToFile(String filename)
     {
         // Output to text file
         PrintWriter out;
@@ -242,7 +228,7 @@ public class Maze
             return;
         }
         // Output to file
-        out.println(toDFS());
+        out.println(outputDFSToString());
         out.close();
     }
 
@@ -364,7 +350,7 @@ public class Maze
         return availableNeighbours;
     }
 
-    public String getSolved()
+    public String getSolution()
     {
         String out = "(";
         for (ArrayList<Integer> i : solution)
@@ -375,6 +361,22 @@ public class Maze
         out += ")\n";
         out += solution.size() + "\n";
         out += time;
+        return out;
+    }
+
+    @Override public String toString()
+    {
+        String out = "Visual Output:\n "
+                + "_ ".repeat(maze.get(0).size()) + "\n";
+        for (int i = 0; i < maze.size(); i++)
+        {
+            out += "|";
+            for (int j = 0; j < maze.get(i).size(); j++)
+            {
+                out += maze.get(i).get(j);
+            }
+            out += "\n";
+        }
         return out;
     }
 }

@@ -17,7 +17,7 @@ public class MazeSolverDFS
         Maze maze = new Maze();
         maze.generateFromFile(args[0]);
         maze.solve();
-        System.out.println(maze.getSolved());
+        System.out.println(maze.getSolution());
     }
 
     private static boolean validateArgs(String[] args)

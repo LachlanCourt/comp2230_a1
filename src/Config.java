@@ -1,4 +1,3 @@
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -32,11 +31,10 @@ public class Config
         return end;
     }
 
-    public int getValue()
+    public int getWallValue()
     {
         int walls = Integer.valueOf(vals.substring(0, 1));
         vals = vals.substring(1);
-
         return walls;
     }
 
