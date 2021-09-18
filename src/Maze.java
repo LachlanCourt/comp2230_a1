@@ -61,7 +61,7 @@ public class Maze
             for (int j = 0; j < width; j++)
             {
                 // Assume that the walls are entirely closed
-                int walls = 0;
+                Cell.WallStates walls = Cell.WallStates.valueOf(0);
                 // Apply config, if it has been initialised
                 if (hasConfig)
                 {
@@ -141,26 +141,26 @@ public class Maze
             if (y < next.get(1))
             {
                 tempCell = maze.get(y).get(x);
-                if (tempCell.getWalls() == 0)
+                if (tempCell.getWalls() == Cell.WallStates.BOTH_CLOSED)
                 {
-                    tempCell.setWalls(2);
+                    tempCell.setWalls(Cell.WallStates.BOTTOM_ONLY);
                 }
-                else if (tempCell.getWalls() == 1)
+                else if (tempCell.getWalls() == Cell.WallStates.RIGHT_ONLY)
                 {
-                    tempCell.setWalls(3);
+                    tempCell.setWalls(Cell.WallStates.BOTH_OPEN);
                 }
             }
             // If the new cell is above the current cell
             else
             {
                 tempCell = maze.get(y - 1).get(x);
-                if (tempCell.getWalls() == 0)
+                if (tempCell.getWalls() == Cell.WallStates.BOTH_CLOSED)
                 {
-                    tempCell.setWalls(2);
+                    tempCell.setWalls(Cell.WallStates.BOTTOM_ONLY);
                 }
-                else if (tempCell.getWalls() == 1)
+                else if (tempCell.getWalls() == Cell.WallStates.RIGHT_ONLY)
                 {
-                    tempCell.setWalls(3);
+                    tempCell.setWalls(Cell.WallStates.BOTH_OPEN);
                 }
             }
         }
@@ -171,26 +171,26 @@ public class Maze
             if (x < next.get(0))
             {
                 tempCell = maze.get(y).get(x);
-                if (tempCell.getWalls() == 0)
+                if (tempCell.getWalls() == Cell.WallStates.BOTH_CLOSED)
                 {
-                    tempCell.setWalls(1);
+                    tempCell.setWalls(Cell.WallStates.RIGHT_ONLY);
                 }
-                else if (tempCell.getWalls() == 2)
+                else if (tempCell.getWalls() == Cell.WallStates.BOTTOM_ONLY)
                 {
-                    tempCell.setWalls(3);
+                    tempCell.setWalls(Cell.WallStates.BOTH_OPEN);
                 }
             }
             // If the new cell is to the left of the current cell
             else
             {
                 tempCell = maze.get(y).get(x - 1);
-                if (tempCell.getWalls() == 0)
+                if (tempCell.getWalls() == Cell.WallStates.BOTH_CLOSED)
                 {
-                    tempCell.setWalls(1);
+                    tempCell.setWalls(Cell.WallStates.RIGHT_ONLY);
                 }
-                else if (tempCell.getWalls() == 2)
+                else if (tempCell.getWalls() == Cell.WallStates.BOTTOM_ONLY)
                 {
-                    tempCell.setWalls(3);
+                    tempCell.setWalls(Cell.WallStates.BOTH_OPEN);
                 }
             }
         }
@@ -269,7 +269,7 @@ public class Maze
             for (int j = 0; j < maze.get(i).size(); j++)
             {
                 // Add the walls of the cell
-                vals += maze.get(i).get(j).getWalls();
+                vals += maze.get(i).get(j).getWalls().getValue();
                 // Add start
                 if (maze.get(i).get(j).isStarting())
                 {
@@ -442,7 +442,9 @@ public class Maze
         {
             tempCell = maze.get(y).get(x - 1);
             // If the cell is not visited and has an open right wall
-            if (!tempCell.isVisited() && (tempCell.getWalls() == 1 || tempCell.getWalls() == 3))
+            if (!tempCell.isVisited()
+                && (tempCell.getWalls() == Cell.WallStates.RIGHT_ONLY
+                    || tempCell.getWalls() == Cell.WallStates.BOTH_OPEN))
             {
                 availableNeighbours.add(new ArrayList<Integer>(Arrays.asList(x - 1, y)));
             }
@@ -452,7 +454,9 @@ public class Maze
         {
             tempCell = maze.get(y).get(x + 1);
             // If the cell is not visited and has an open left wall
-            if (!tempCell.isVisited() && (maze.get(y).get(x).getWalls() == 1 || maze.get(y).get(x).getWalls() == 3))
+            if (!tempCell.isVisited()
+                && (maze.get(y).get(x).getWalls() == Cell.WallStates.RIGHT_ONLY
+                    || maze.get(y).get(x).getWalls() == Cell.WallStates.BOTH_OPEN))
             {
                 availableNeighbours.add(new ArrayList<Integer>(Arrays.asList(x + 1, y)));
             }
@@ -462,7 +466,9 @@ public class Maze
         {
             tempCell = maze.get(y - 1).get(x);
             // If the cell is not visited and has an open bottom wall
-            if (!tempCell.isVisited() && (tempCell.getWalls() == 2 || tempCell.getWalls() == 3))
+            if (!tempCell.isVisited()
+                && (tempCell.getWalls() == Cell.WallStates.BOTTOM_ONLY
+                    || tempCell.getWalls() == Cell.WallStates.BOTH_OPEN))
             {
                 availableNeighbours.add(new ArrayList<Integer>(Arrays.asList(x, y - 1)));
             }
@@ -472,7 +478,9 @@ public class Maze
         {
             tempCell = maze.get(y + 1).get(x);
             // If the cell is not visited and has an open top wall
-            if (!tempCell.isVisited() && (maze.get(y).get(x).getWalls() == 2 || maze.get(y).get(x).getWalls() == 3))
+            if (!tempCell.isVisited()
+                && (maze.get(y).get(x).getWalls() == Cell.WallStates.BOTTOM_ONLY
+                    || maze.get(y).get(x).getWalls() == Cell.WallStates.BOTH_OPEN))
             {
                 availableNeighbours.add(new ArrayList<Integer>(Arrays.asList(x, y + 1)));
             }

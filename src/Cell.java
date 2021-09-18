@@ -10,15 +10,46 @@
 
 public class Cell
 {
-    private int walls;
+    public enum WallStates {
+        BOTH_CLOSED(0),
+        RIGHT_ONLY(1),
+        BOTTOM_ONLY(2),
+        BOTH_OPEN(3);
+        private int value;
+        WallStates(int value_)
+        {
+            this.value = value_;
+        }
+        public static WallStates valueOf(Integer value_)
+        {
+            switch (value_)
+            {
+                case 0:
+                    return BOTH_CLOSED;
+                case 1:
+                    return RIGHT_ONLY;
+                case 2:
+                    return BOTTOM_ONLY;
+                case 3:
+                    return BOTH_OPEN;
+                default:
+                    return BOTH_CLOSED;
+            }
+        }
+        public int getValue()
+        {
+            return this.value;
+        }
+    }
+
+    private WallStates walls;
     private boolean visited;
     private boolean starting;
     private boolean finishing;
 
-    public enum WallStates { BOTH_CLOSED, RIGHT_ONLY, BOTTOM_ONLY, BOTH_OPEN }
 
     // Constructor
-    public Cell(int walls_)
+    public Cell(WallStates walls_)
     {
         walls = walls_;
         visited = false;
@@ -28,12 +59,12 @@ public class Cell
 
     // Getters and setters
 
-    public int getWalls()
+    public WallStates getWalls()
     {
         return walls;
     }
 
-    public void setWalls(int walls_)
+    public void setWalls(WallStates walls_)
     {
         this.walls = walls_;
     }
@@ -76,13 +107,13 @@ public class Cell
     {
         switch (walls)
         {
-            case 0:
+            case BOTH_CLOSED:
                 return "_|";
-            case 1:
+            case RIGHT_ONLY:
                 return "_ ";
-            case 2:
+            case BOTTOM_ONLY:
                 return " |";
-            case 3:
+            case BOTH_OPEN:
                 return "  ";
             default:
                 return "";

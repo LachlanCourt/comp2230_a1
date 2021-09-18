@@ -45,9 +45,9 @@ public class Config
      * Gets the next value of the vals String and removes it from the String
      * @return The next value of the vals String
      */
-    public int getWallValue()
+    public Cell.WallStates getWallValue()
     {
-        int walls = Integer.valueOf(vals.substring(0, 1));
+        Cell.WallStates walls = Cell.WallStates.valueOf(Integer.valueOf(vals.substring(0, 1)));
         vals = vals.substring(1);
         return walls;
     }
