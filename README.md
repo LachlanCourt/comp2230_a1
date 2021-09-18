@@ -22,4 +22,4 @@ Assignment was split into two separate problems
 
 ### Run
 1. `java MazeGenerator <width> <height> <filename>` with `filename` as an output file
-2. `java MazeSolverDFS <filename>` where `filename` refers to a file generated from the previous step
+2. `java MazeSolverDFS <filename> [showBacktracking:true]` where `filename` refers to a file generated from the previous step and `showBacktracking` is an optional boolean to indicate whether the solution should include any backtracking as it discovered the solution 
