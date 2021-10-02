@@ -93,19 +93,33 @@ public class Maze
      * @param width of maze
      * @param height of maze
      */
-    public void generateFromValues(int width, int height)
-    {
-        // Initialise a new maze from scratch
-        initFromValues(width, height);
+    public void generateFromValues(int width, int height) {
+        try {
+            // Initialise a new maze from scratch
+            initFromValues(width, height);
 
-        // Select a starting cell
-        Random r = new Random();
-        int y = r.nextInt(maze.size());
-        int x = r.nextInt(maze.get(y).size());
-        maze.get(y).get(x).setStarting(true);
+            // Select a starting cell
+            Random r = new Random();
+            int y = r.nextInt(maze.size());
+            int x = r.nextInt(maze.get(y).size());
+            maze.get(y).get(x).setStarting(true);
 
-        // Call recursive
-        genDFS(x, y);
+            // Call recursive
+            genDFSRecursive(x, y);
+        } catch (StackOverflowError e)
+        {
+            // Initialise a new maze from scratch
+            initFromValues(width, height);
+
+            // Select a starting cell
+            Random r = new Random();
+            int y = r.nextInt(maze.size());
+            int x = r.nextInt(maze.get(y).size());
+            maze.get(y).get(x).setStarting(true);
+
+            // Call recursive
+            genDFSIterative(x, y);
+        }
     }
 
     /**
@@ -113,7 +127,7 @@ public class Maze
      * @param x the x coordinate of the current cell being looked at
      * @param y the y coordinate of the current cell being looked at
      */
-    private void genDFS(int x, int y)
+    private void genDFSRecursive(int x, int y)
     {
         // If the cell has not yet been visited, mark it as visited and increment the counter. Method will terminate
         // when the counter is equal to width * height
@@ -203,11 +217,116 @@ public class Maze
             }
         }
         // Call recursive on the new neighbour
-        genDFS(next.get(0), next.get(1));
+        genDFSRecursive(next.get(0), next.get(1));
         // While there are still unvisited neighbours, call recursive on each of those neighbours
         while (getNeighbours(x, y).size() > 0)
         {
-            genDFS(x, y);
+            genDFSRecursive(x, y);
+        }
+    }
+
+    /**
+     * Recursive method to generate a maze
+     * @param x the x coordinate of the current cell being looked at
+     * @param y the y coordinate of the current cell being looked at
+     */
+    private void genDFSIterative(int x, int y)
+    {
+        System.out.println("Weewoo");
+        System.exit(1);
+        // If the cell has not yet been visited, mark it as visited and increment the counter. Method will terminate
+        // when the counter is equal to width * height
+        if (!maze.get(y).get(x).isVisited())
+        {
+            maze.get(y).get(x).setVisited(true);
+            visitCount++;
+        }
+        // Get a list of unvisited neighbours to the current cell being looked at
+        ArrayList<ArrayList<Integer>> availableNeighbours = getNeighbours(x, y);
+
+        if (availableNeighbours.size() == 0)  // Leaf node
+        {
+            // If the visit count is equal to width * height then the maze has found it's finishing cell
+            if (visitCount == maze.size() * maze.get(0).size())
+            {
+                maze.get(y).get(x).setFinishing(true);
+            }
+            return;
+        }
+
+        // If we have not found the end of the maze, pick new neighbour randomly out of the options
+        Random r = new Random();
+        int nextIndex = r.nextInt(availableNeighbours.size());
+        ArrayList<Integer> next = availableNeighbours.get(nextIndex);
+
+        // Set walls of the surrounding cell assuming that we are about to move to the new neighbour
+        Cell tempCell;
+        // If the y coordinate is the one changing
+        if (x == next.get(0))
+        {
+            // If the new cell is to below the current cell
+            if (y < next.get(1))
+            {
+                tempCell = maze.get(y).get(x);
+                if (tempCell.getWalls() == Cell.WallStates.BOTH_CLOSED)
+                {
+                    tempCell.setWalls(Cell.WallStates.BOTTOM_ONLY);
+                }
+                else if (tempCell.getWalls() == Cell.WallStates.RIGHT_ONLY)
+                {
+                    tempCell.setWalls(Cell.WallStates.BOTH_OPEN);
+                }
+            }
+            // If the new cell is above the current cell
+            else
+            {
+                tempCell = maze.get(y - 1).get(x);
+                if (tempCell.getWalls() == Cell.WallStates.BOTH_CLOSED)
+                {
+                    tempCell.setWalls(Cell.WallStates.BOTTOM_ONLY);
+                }
+                else if (tempCell.getWalls() == Cell.WallStates.RIGHT_ONLY)
+                {
+                    tempCell.setWalls(Cell.WallStates.BOTH_OPEN);
+                }
+            }
+        }
+        // If the x coordinate is changing
+        else
+        {
+            // If the new cell is to the right of the current cell
+            if (x < next.get(0))
+            {
+                tempCell = maze.get(y).get(x);
+                if (tempCell.getWalls() == Cell.WallStates.BOTH_CLOSED)
+                {
+                    tempCell.setWalls(Cell.WallStates.RIGHT_ONLY);
+                }
+                else if (tempCell.getWalls() == Cell.WallStates.BOTTOM_ONLY)
+                {
+                    tempCell.setWalls(Cell.WallStates.BOTH_OPEN);
+                }
+            }
+            // If the new cell is to the left of the current cell
+            else
+            {
+                tempCell = maze.get(y).get(x - 1);
+                if (tempCell.getWalls() == Cell.WallStates.BOTH_CLOSED)
+                {
+                    tempCell.setWalls(Cell.WallStates.RIGHT_ONLY);
+                }
+                else if (tempCell.getWalls() == Cell.WallStates.BOTTOM_ONLY)
+                {
+                    tempCell.setWalls(Cell.WallStates.BOTH_OPEN);
+                }
+            }
+        }
+        // Call recursive on the new neighbour
+        genDFSIterative(next.get(0), next.get(1));
+        // While there are still unvisited neighbours, call recursive on each of those neighbours
+        while (getNeighbours(x, y).size() > 0)
+        {
+            genDFSIterative(x, y);
         }
     }
 
@@ -371,7 +490,7 @@ public class Maze
         // Initialise an arraylist that will contain cell numbers to follow to go from the start to the end of the maze
         solution = new ArrayList<ArrayList<Integer>>();
         // Call recursive
-        solveDFS(config.getStart().get(0), config.getStart().get(1));
+        solveDFSRecursive(config.getStart().get(0), config.getStart().get(1));
         // Calculate the time taken to solve by subtracting the time it started from the current time
         time = java.lang.System.currentTimeMillis() - time;
     }
@@ -381,7 +500,7 @@ public class Maze
      * @param x the x coordinate of the current cell being looked at
      * @param y the y coordinate of the current cell being looked at
      */
-    private void solveDFS(int x, int y)
+    private void solveDFSRecursive(int x, int y)
     {
         // If the cell has not yet been visited, mark it as visited and add the cell to the solution
         if (!maze.get(y).get(x).isVisited())
@@ -417,12 +536,12 @@ public class Maze
         ArrayList<Integer> next = availableNeighbours.get(0);
 
         // Call recursive on the new neighbour
-        solveDFS(next.get(0), next.get(1));
+        solveDFSRecursive(next.get(0), next.get(1));
         // While there are still unvisited neighbours and the solution has not been found, call recursive on each of
         // those neighbours
         while (getOpenNeighbours(x, y).size() > 0 && !isSolved())
         {
-            solveDFS(x, y);
+            solveDFSRecursive(x, y);
         }
         // If the solution has not been found and the last element of the solution list is the current cell, we are
         // backtracking after reaching a dead end. Remove it from the list
