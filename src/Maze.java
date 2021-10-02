@@ -10,10 +10,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 public class Maze
 {
@@ -228,9 +225,9 @@ public class Maze
     }
 
     /**
-     * Recursive method to generate a maze
-     * @param x the x coordinate of the current cell being looked at
-     * @param y the y coordinate of the current cell being looked at
+     * Iterative method to generate a maze
+     * @param x the x coordinate of the start of the maze
+     * @param y the y coordinate of the start of the maze
      */
     private void genDFSIterative(int x, int y) {
         ArrayList<ArrayList<Integer>> history = new ArrayList<ArrayList<Integer>>();
@@ -467,7 +464,7 @@ public class Maze
     /**
      * Solves the maze by recursively calling DFS starting at the starting cell
      */
-    public void solve()
+    public void solveRec() throws StackOverflowError
     {
         // Record the time the algorithm starts
         time = java.lang.System.currentTimeMillis();
@@ -475,6 +472,18 @@ public class Maze
         solution = new ArrayList<ArrayList<Integer>>();
         // Call recursive
         solveDFSRecursive(config.getStart().get(0), config.getStart().get(1));
+        // Calculate the time taken to solve by subtracting the time it started from the current time
+        time = java.lang.System.currentTimeMillis() - time;
+    }
+
+    public void solveItr()
+    {
+        // Record the time the algorithm starts
+        time = java.lang.System.currentTimeMillis();
+        // Initialise an arraylist that will contain cell numbers to follow to go from the start to the end of the maze
+        solution = new ArrayList<ArrayList<Integer>>();
+        // Call recursive
+        solveDFSIterative(config.getStart().get(0), config.getStart().get(1));
         // Calculate the time taken to solve by subtracting the time it started from the current time
         time = java.lang.System.currentTimeMillis() - time;
     }
@@ -536,6 +545,44 @@ public class Maze
             {
                 solution.remove(solution.size() - 1);
             }
+        }
+    }
+
+    /**
+     * Iterative method to solve a maze
+     * @param x the x coordinate of the start of the maze
+     * @param y the y coordinate of the start of the maze
+     */
+    private void solveDFSIterative(int x, int y)
+    {
+        ArrayList<ArrayList<Integer>> history = new ArrayList<ArrayList<Integer>>();
+        history.add(new ArrayList<Integer>(Arrays.asList(x, y)));
+        while (history.size() > 0) {
+            // If the cell has not yet been visited, mark it as visited and add the cell to the solution
+            if (!maze.get(y).get(x).isVisited()) {
+                maze.get(y).get(x).setVisited(true);
+            }
+            solution.add(new ArrayList<Integer>(Arrays.asList(x, y)));
+            // If the solution has been found there is no need to check neighbours or continue the recursion
+            if (isSolved()) {
+                return;
+            }
+            // Get a list of unvisited neighbours that have open walls to the current cell being looked at
+            ArrayList<ArrayList<Integer>> availableNeighbours = getOpenNeighbours(x, y);
+            while (availableNeighbours.size() == 0)  // Leaf node
+            {
+                x = history.get(history.size() - 1).get(0);
+                y = history.get(history.size() - 1).get(1);
+                history.remove(history.size() - 1);
+                availableNeighbours = getOpenNeighbours(x, y);
+            }
+
+            // Always pick the first option so the solution is deterministic
+            ArrayList<Integer> next = availableNeighbours.get(0);
+
+            x = next.get(0);
+            y = next.get(1);
+            history.add(new ArrayList<Integer>(Arrays.asList(x, y)));
         }
     }
 
