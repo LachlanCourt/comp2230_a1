@@ -25,7 +25,13 @@ public class MazeGenerator
     {
         // Initialise a new Maze and generate from command line arguments
         Maze maze = new Maze();
-        maze.generateFromValues(Integer.valueOf(args[0]), Integer.valueOf(args[1]));
+        try {
+            maze.generateFromValuesRec(Integer.valueOf(args[0]), Integer.valueOf(args[1]));
+        }
+        catch (StackOverflowError e)
+        {
+            maze.generateFromValuesItr(Integer.valueOf(args[0]), Integer.valueOf(args[1]));
+        }
         // Output the maze to console, and then write to file
         System.out.println(maze);
         maze.outputDFSToFile(args[2]);

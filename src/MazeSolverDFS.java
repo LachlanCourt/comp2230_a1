@@ -33,7 +33,8 @@ public class MazeSolverDFS
         }
         // Initialise a new Maze and generate from the file provided
         Maze maze;
-        try {
+        try
+        {
             maze = new Maze(showBacktracking);
             maze.generateFromFile(args[0]);
             // Solve the maze and output to console
