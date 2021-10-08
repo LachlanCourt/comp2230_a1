@@ -10,10 +10,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 public class Maze
 {
@@ -93,8 +90,26 @@ public class Maze
      * @param width of maze
      * @param height of maze
      */
-    public void generateFromValues(int width, int height)
+    public void generateFromValuesRec(int width, int height) throws StackOverflowError
     {
+        // Generate blank maze with random start point
+        ArrayList<Integer> start = setUpBlankMaze(width, height);
+        // Call recursive
+        genDFSRecursive(start.get(0), start.get(1));
+    }
+
+    public void generateFromValuesItr(int width, int height)
+    {
+        // Generate blank maze with random start point
+        ArrayList<Integer> start = setUpBlankMaze(width, height);
+        // Call iterative
+        genDFSIterative(start.get(0), start.get(1));
+    }
+
+    private ArrayList<Integer> setUpBlankMaze(int width, int height)
+    {
+        maze = new ArrayList<ArrayList<Cell>>();
+        visitCount = 0;
         // Initialise a new maze from scratch
         initFromValues(width, height);
 
@@ -103,9 +118,7 @@ public class Maze
         int y = r.nextInt(maze.size());
         int x = r.nextInt(maze.get(y).size());
         maze.get(y).get(x).setStarting(true);
-
-        // Call recursive
-        genDFS(x, y);
+        return new ArrayList<Integer>(Arrays.asList(x, y));
     }
 
     /**
@@ -113,7 +126,7 @@ public class Maze
      * @param x the x coordinate of the current cell being looked at
      * @param y the y coordinate of the current cell being looked at
      */
-    private void genDFS(int x, int y)
+    private void genDFSRecursive(int x, int y)
     {
         // If the cell has not yet been visited, mark it as visited and increment the counter. Method will terminate
         // when the counter is equal to width * height
@@ -127,7 +140,7 @@ public class Maze
 
         if (availableNeighbours.size() == 0)  // Leaf node
         {
-            // If the visit count is equal to width * height then the maze has found it's finishing cell
+            // If the visit count is equal to width * height then the maze has found its finishing cell
             if (visitCount == maze.size() * maze.get(0).size())
             {
                 maze.get(y).get(x).setFinishing(true);
@@ -139,7 +152,66 @@ public class Maze
         Random r = new Random();
         int nextIndex = r.nextInt(availableNeighbours.size());
         ArrayList<Integer> next = availableNeighbours.get(nextIndex);
+        // Set walls of the surrounding cells assuming that we are about to move to the new neighbour
+        setWalls(next, x, y);
+        // Call recursive on the new neighbour
+        genDFSRecursive(next.get(0), next.get(1));
+        // While there are still unvisited neighbours, call recursive on each of those neighbours
+        while (getNeighbours(x, y).size() > 0)
+        {
+            genDFSRecursive(x, y);
+        }
+    }
 
+    /**
+     * Iterative method to generate a maze
+     * @param x the x coordinate of the start of the maze
+     * @param y the y coordinate of the start of the maze
+     */
+    private void genDFSIterative(int x, int y)
+    {
+        ArrayList<ArrayList<Integer>> history = new ArrayList<ArrayList<Integer>>();
+        history.add(new ArrayList<Integer>(Arrays.asList(x, y)));
+        while (history.size() > 0)
+        {
+            // If the cell has not yet been visited, mark it as visited and increment the counter. Method will terminate
+            // when the counter is equal to width * height
+            if (!maze.get(y).get(x).isVisited())
+            {
+                maze.get(y).get(x).setVisited(true);
+                visitCount++;
+            }
+
+            // Get a list of unvisited neighbours to the current cell being looked at
+            ArrayList<ArrayList<Integer>> availableNeighbours = getNeighbours(x, y);
+            while (availableNeighbours.size() == 0)  // Leaf node
+            {
+                // If the visit count is equal to width * height then the maze has found its finishing cell
+                if (visitCount == maze.size() * maze.get(0).size())
+                {
+                    maze.get(y).get(x).setFinishing(true);
+                    return;
+                }
+                x = history.get(history.size() - 1).get(0);
+                y = history.get(history.size() - 1).get(1);
+                history.remove(history.size() - 1);
+                availableNeighbours = getNeighbours(x, y);
+            }
+
+            // If we have not found the end of the maze, pick new neighbour randomly out of the options
+            Random r = new Random();
+            int nextIndex = r.nextInt(availableNeighbours.size());
+            ArrayList<Integer> next = availableNeighbours.get(nextIndex);
+            // Set walls of the surrounding cells assuming that we are about to move to the new neighbour
+            setWalls(next, x, y);
+            x = next.get(0);
+            y = next.get(1);
+            history.add(new ArrayList<Integer>(Arrays.asList(x, y)));
+        }
+    }
+
+    private void setWalls(ArrayList<Integer> next, int x, int y)
+    {
         // Set walls of the surrounding cell assuming that we are about to move to the new neighbour
         Cell tempCell;
         // If the y coordinate is the one changing
@@ -201,13 +273,6 @@ public class Maze
                     tempCell.setWalls(Cell.WallStates.BOTH_OPEN);
                 }
             }
-        }
-        // Call recursive on the new neighbour
-        genDFS(next.get(0), next.get(1));
-        // While there are still unvisited neighbours, call recursive on each of those neighbours
-        while (getNeighbours(x, y).size() > 0)
-        {
-            genDFS(x, y);
         }
     }
 
@@ -364,14 +429,26 @@ public class Maze
     /**
      * Solves the maze by recursively calling DFS starting at the starting cell
      */
-    public void solve()
+    public void solveRec() throws StackOverflowError
     {
         // Record the time the algorithm starts
         time = java.lang.System.currentTimeMillis();
         // Initialise an arraylist that will contain cell numbers to follow to go from the start to the end of the maze
         solution = new ArrayList<ArrayList<Integer>>();
         // Call recursive
-        solveDFS(config.getStart().get(0), config.getStart().get(1));
+        solveDFSRecursive(config.getStart().get(0), config.getStart().get(1));
+        // Calculate the time taken to solve by subtracting the time it started from the current time
+        time = java.lang.System.currentTimeMillis() - time;
+    }
+
+    public void solveItr()
+    {
+        // Record the time the algorithm starts
+        time = java.lang.System.currentTimeMillis();
+        // Initialise an arraylist that will contain cell numbers to follow to go from the start to the end of the maze
+        solution = new ArrayList<ArrayList<Integer>>();
+        // Call recursive
+        solveDFSIterative(config.getStart().get(0), config.getStart().get(1));
         // Calculate the time taken to solve by subtracting the time it started from the current time
         time = java.lang.System.currentTimeMillis() - time;
     }
@@ -381,7 +458,7 @@ public class Maze
      * @param x the x coordinate of the current cell being looked at
      * @param y the y coordinate of the current cell being looked at
      */
-    private void solveDFS(int x, int y)
+    private void solveDFSRecursive(int x, int y)
     {
         // If the cell has not yet been visited, mark it as visited and add the cell to the solution
         if (!maze.get(y).get(x).isVisited())
@@ -417,12 +494,12 @@ public class Maze
         ArrayList<Integer> next = availableNeighbours.get(0);
 
         // Call recursive on the new neighbour
-        solveDFS(next.get(0), next.get(1));
+        solveDFSRecursive(next.get(0), next.get(1));
         // While there are still unvisited neighbours and the solution has not been found, call recursive on each of
         // those neighbours
         while (getOpenNeighbours(x, y).size() > 0 && !isSolved())
         {
-            solveDFS(x, y);
+            solveDFSRecursive(x, y);
         }
         // If the solution has not been found and the last element of the solution list is the current cell, we are
         // backtracking after reaching a dead end. Remove it from the list
@@ -433,6 +510,47 @@ public class Maze
             {
                 solution.remove(solution.size() - 1);
             }
+        }
+    }
+
+    /**
+     * Iterative method to solve a maze
+     * @param x the x coordinate of the start of the maze
+     * @param y the y coordinate of the start of the maze
+     */
+    private void solveDFSIterative(int x, int y)
+    {
+        ArrayList<ArrayList<Integer>> history = new ArrayList<ArrayList<Integer>>();
+        history.add(new ArrayList<Integer>(Arrays.asList(x, y)));
+        while (history.size() > 0)
+        {
+            // If the cell has not yet been visited, mark it as visited and add the cell to the solution
+            if (!maze.get(y).get(x).isVisited())
+            {
+                maze.get(y).get(x).setVisited(true);
+            }
+            solution.add(new ArrayList<Integer>(Arrays.asList(x, y)));
+            // If the solution has been found there is no need to check neighbours or continue the recursion
+            if (isSolved())
+            {
+                return;
+            }
+            // Get a list of unvisited neighbours that have open walls to the current cell being looked at
+            ArrayList<ArrayList<Integer>> availableNeighbours = getOpenNeighbours(x, y);
+            while (availableNeighbours.size() == 0)  // Leaf node
+            {
+                x = history.get(history.size() - 1).get(0);
+                y = history.get(history.size() - 1).get(1);
+                history.remove(history.size() - 1);
+                availableNeighbours = getOpenNeighbours(x, y);
+            }
+
+            // Always pick the first option so the solution is deterministic
+            ArrayList<Integer> next = availableNeighbours.get(0);
+
+            x = next.get(0);
+            y = next.get(1);
+            history.add(new ArrayList<Integer>(Arrays.asList(x, y)));
         }
     }
 
