@@ -25,7 +25,8 @@ public class MazeGenerator
     {
         // Initialise a new Maze and generate from command line arguments
         Maze maze = new Maze();
-        try {
+        try
+        {
             maze.generateFromValuesRec(Integer.valueOf(args[0]), Integer.valueOf(args[1]));
         }
         catch (StackOverflowError e)
